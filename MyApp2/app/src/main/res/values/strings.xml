@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MyApp2</string>
+    <string name="logout">logout</string>
+    <string name="find_user">find user</string>
+</resources>
