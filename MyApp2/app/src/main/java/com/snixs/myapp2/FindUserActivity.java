@@ -52,7 +52,7 @@ public class FindUserActivity extends AppCompatActivity {
         {
             String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            String Test = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            String Test = name;
 
             boolean b = exists.add(Test);
 
@@ -74,15 +74,10 @@ public class FindUserActivity extends AppCompatActivity {
                 i=i+1;
                 UserObject mContact = new UserObject(name, phone, "");
                 contactList.add(mContact);
-                //  userList.add(mContact);
-                //  mUserListAdapter.notifyDataSetChanged();
                 getUserDetails(mContact);
             }
-            System.out.println("NORMALIZED_NUMBER is = " + Test);
-            System.out.println("Statment is = " + b);
 
         }
-        System.out.println("There are this much users = " + i);
         phones.close();
     }
     private void getUserDetails(final UserObject mContact)
