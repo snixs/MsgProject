@@ -1,5 +1,7 @@
 package com.snixs.myapp2.User;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.snixs.myapp2.ChatActivity;
 import com.snixs.myapp2.FindUserActivity;
 import com.snixs.myapp2.R;
 
@@ -52,10 +55,15 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserLi
                     String key = FirebaseDatabase.getInstance().getReference().child("chat").push().getKey();
                     FirebaseDatabase.getInstance().getReference().child("user").child(FirebaseAuth.getInstance().getUid()).child("chat").child(key).setValue(true);
                     FirebaseDatabase.getInstance().getReference().child("user").child(userList.get(position).getUid()).child("chat").child(key).setValue(true);
+                    Intent intent = new Intent(v.getContext(), ChatActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("chatID", key);
+                    intent.putExtras(bundle);
+                    v.getContext().startActivity(intent);
+
                 }
             }
         });
-
     }
 
     @Override

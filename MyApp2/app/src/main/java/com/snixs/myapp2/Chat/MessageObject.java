@@ -2,13 +2,11 @@ package com.snixs.myapp2.Chat;
 
 public class MessageObject {
 
-    String messageId,
-    senderId,
-    message;
+    private String messageId, senderId, message;
 
     public MessageObject(String messageId, String senderId, String message){
 
-        this.messageId= messageId;
+        this.messageId = messageId;
         this.senderId = senderId;
         this.message = message;
     }

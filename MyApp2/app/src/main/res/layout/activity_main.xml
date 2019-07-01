@@ -8,20 +8,26 @@
     tools:context=".LoginActivity"
     android:orientation="vertical">
 
+    <include layout="@layout/toolbar"
+        android:id="@+id/toolbar"/>
+
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Enter Phone Number"
         android:id="@+id/phoneNumber"/>
+
     <EditText
+        android:id="@+id/code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Enter Code"
-        android:id="@+id/code"/>
+        android:hint="Enter Code" />
+
     <Button
+        android:id="@+id/send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send"
-        android:id="@+id/send"/>
+        android:text="Send" />
+
 
 </LinearLayout>

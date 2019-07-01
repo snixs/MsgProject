@@ -2,7 +2,7 @@ package com.snixs.myapp2.User;
 
 public class UserObject {
 
-    private String name, phone, uid;
+    private String name, phone, uid, imgUrl;
 
     public UserObject(String name, String phone, String uid){
         this.name = name;

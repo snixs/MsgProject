@@ -58,8 +58,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
 
 
-
-
     public class ChatListViewHolder extends RecyclerView.ViewHolder{
         TextView mTitle;
         LinearLayout mLayout;
