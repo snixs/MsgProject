@@ -42,7 +42,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageA
     @Override
     public void onBindViewHolder(@NonNull final MessageAdapterViewHolder holder, final int position) {
         if(!messageList.get(position).getSenderId().equals(FirebaseAuth.getInstance().getUid()))
-        holder.mSender.setText(messageList.get(position).getSenderId());
+        holder.mSender.setText(messageList.get(position).getSenderName());
         holder.mMessage.setText(messageList.get(position).getMessage());
     }
 

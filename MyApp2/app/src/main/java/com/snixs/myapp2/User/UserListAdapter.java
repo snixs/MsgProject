@@ -1,33 +1,24 @@
 package com.snixs.myapp2.User;
 
-import android.content.Intent;
-import android.os.Bundle;
+
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
-import com.snixs.myapp2.ChatActivity;
-import com.snixs.myapp2.FindUserActivity;
 import com.snixs.myapp2.R;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserListViewHolder> {
 
-    ArrayList<UserObject> userList;
-    HashSet<String> activeUser;
+    private ArrayList<UserObject> userList;
+    private OnUserListener mOnUserListener;
 
-    public UserListAdapter(ArrayList<UserObject> userList){
+    public UserListAdapter(ArrayList<UserObject> userList, OnUserListener onUserListener){
         this.userList = userList;
-        activeUser = new HashSet<>();
+        this.mOnUserListener = onUserListener;
     }
 
     @NonNull
@@ -37,7 +28,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserLi
         RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutView.setLayoutParams(lp);
 
-        UserListViewHolder rcv = new UserListViewHolder(layoutView);
+        UserListViewHolder rcv = new UserListViewHolder(layoutView, mOnUserListener);
         return rcv;
     }
 
@@ -46,24 +37,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserLi
         holder.mName.setText(userList.get(position).getName());
         holder.mPhone.setText(userList.get(position).getPhone());
 
-        holder.mLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String t = String.valueOf(position);
-                if(activeUser.add(t))
-                {
-                    String key = FirebaseDatabase.getInstance().getReference().child("chat").push().getKey();
-                    FirebaseDatabase.getInstance().getReference().child("user").child(FirebaseAuth.getInstance().getUid()).child("chat").child(key).setValue(true);
-                    FirebaseDatabase.getInstance().getReference().child("user").child(userList.get(position).getUid()).child("chat").child(key).setValue(true);
-                    Intent intent = new Intent(v.getContext(), ChatActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("chatID", key);
-                    intent.putExtras(bundle);
-                    v.getContext().startActivity(intent);
-
-                }
-            }
-        });
     }
 
     @Override
@@ -73,14 +46,30 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserLi
 
 
 
-    class UserListViewHolder extends RecyclerView.ViewHolder{
+    class UserListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView mName, mPhone;
         LinearLayout mLayout;
-        UserListViewHolder(View view){
+
+        OnUserListener onUserListener;
+
+        public UserListViewHolder(View view, OnUserListener onUserListener){
             super(view);
             mName = view.findViewById(R.id.name);
             mPhone = view.findViewById(R.id.phone);
             mLayout = view.findViewById(R.id.userLayout);
+            this.onUserListener = onUserListener;
+
+            view.setOnClickListener(this);
+
         }
+
+        @Override
+        public void onClick(View v) {
+            onUserListener.OnUserClick(getAdapterPosition());
+        }
+    }
+
+    public interface OnUserListener{
+        void OnUserClick(int position);
     }
 }

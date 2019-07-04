@@ -33,6 +33,7 @@ public class ChatActivity extends AppCompatActivity {
 
     ArrayList<MessageObject> messageList;
     String chatID;
+    String uName;
     DatabaseReference mChatDb;
 
     @Override
@@ -41,6 +42,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
 
+        uName = getIntent().getExtras().getString("uName");
         chatID = getIntent().getExtras().getString("chatID");
         mChatDb = FirebaseDatabase.getInstance().getReference().child("chat").child(chatID);
         initializeMessage();
@@ -68,11 +70,16 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if(dataSnapshot.exists()){
+                    MessageObject mMessage;
                     Object text = dataSnapshot.child("text").getValue();
                     Object creatorID = dataSnapshot.child("creator").getValue();
                     if(text != null && creatorID != null)
                     {
-                        MessageObject mMessage = new MessageObject(dataSnapshot.getKey(), creatorID.toString(), text.toString());
+                        if(creatorID.toString().equals(FirebaseAuth.getInstance().getUid())) {
+                            mMessage = new MessageObject(dataSnapshot.getKey(), creatorID.toString(),"me", text.toString());
+                        }else {
+                            mMessage = new MessageObject(dataSnapshot.getKey(), creatorID.toString(), uName, text.toString());
+                        }
                         messageList.add(mMessage);
                         mChatLayoutManager.scrollToPosition(messageList.size()-1);
                         mChatAdapter.notifyDataSetChanged();

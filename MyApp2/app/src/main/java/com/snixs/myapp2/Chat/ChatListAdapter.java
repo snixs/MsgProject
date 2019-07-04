@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.snixs.myapp2.ChatActivity;
+import com.snixs.myapp2.FindUserActivity;
 import com.snixs.myapp2.R;
 
 
@@ -37,7 +39,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
     @Override
     public void onBindViewHolder(@NonNull final ChatListViewHolder holder, final int position) {
-        holder.mTitle.setText(chatList.get(position).getUid());
+
+        holder.mTitle.setText(chatList.get(position).getChatName(FirebaseAuth.getInstance().getUid()));
 
         holder.mLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,4 +70,5 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             mLayout = view.findViewById(R.id.chatLayout);
         }
     }
+
 }

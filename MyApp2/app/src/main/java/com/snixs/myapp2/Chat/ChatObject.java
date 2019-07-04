@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 public class ChatObject {
     private String uid;
-
     private ArrayList<UserObject> userObjectArrayList = new ArrayList<>();
 
     public ChatObject(String uid) {
@@ -23,8 +22,21 @@ public class ChatObject {
 
 
 
+    public String getChatName(String asUserId)
+    {
+        String name="def";
+        for(int i=0; i< userObjectArrayList.size(); i++)
+        {
+            if(!asUserId.equals(userObjectArrayList.get(i).getUid())) {
+             name=userObjectArrayList.get(i).getName();
+            }
+            else name="def";
+        }
+        return name;
+    }
 
-    public void addUserToArrayList(UserObject mUser){
+
+    public void addUserToChat(UserObject mUser){
         userObjectArrayList.add(mUser);
     }
 }
