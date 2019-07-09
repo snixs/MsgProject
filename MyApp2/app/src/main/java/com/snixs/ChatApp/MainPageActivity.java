@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +19,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -82,8 +80,9 @@ public class MainPageActivity extends AppCompatActivity {
 
         getPermissions();
         getContactList();
-        initRecyclerView();
         getUserChatList();
+        initRecyclerView();
+        mChatListAdapter.notifyDataSetChanged();
     }
 
 
@@ -151,12 +150,6 @@ public class MainPageActivity extends AppCompatActivity {
 
 
                         UserObject mUser = new UserObject(name, phone, childSnapshot.getKey());
-                        // if (name.equals(phone))
-                        //  for(UserObject mContactIterator : contactList){
-                        //     if(mContactIterator.getPhone().equals(mUser.getPhone())){
-                        //       mUser.setName(mContactIterator.getName());
-                        // }
-                        //}
                         userList.add(mUser);
                         return;
                     }
@@ -177,37 +170,32 @@ public class MainPageActivity extends AppCompatActivity {
                 if(dataSnapshot.exists()){
                     for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
 
-                        ChatObject mChat = new ChatObject(childSnapshot.getKey());
+                        final ChatObject mChat = new ChatObject(childSnapshot.getKey());
+
                         boolean ex = false;
                         for (ChatObject mChatIterator : chatList) {
-                            if(mChatIterator.getUid().equals(mChat.getUid()))
+
+                            if(mChatIterator.getUid().equals(mChat.getUid())) {
                                 ex = true;
+                            }
                         }
-                        if(ex) continue;
-                        String key;
-                        UserObject user;
-                      //  System.out.println(childSnapshot.getKey() + "this is the chat");
-                        DatabaseReference usersChat = FirebaseDatabase.getInstance().getReference().child("chat").child(childSnapshot.getKey());
-                        usersChat.addChildEventListener(new ChildEventListener() {
+
+                        DatabaseReference usersChat = FirebaseDatabase.getInstance().getReference().child("chat").child(childSnapshot.getKey()).child("user");
+
+                        usersChat.addValueEventListener(new ValueEventListener() {
                             @Override
-                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                System.out.println(dataSnapshot.getKey());
-                                System.out.println(dataSnapshot.getValue());
-                            }
-
-                            @Override
-                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                            }
-
-                            @Override
-                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                            }
-
-                            @Override
-                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot childSnapshot : dataSnapshot.getChildren())
+                                {
+                                    for(UserObject mUserIt : userList)
+                                    {
+                                        if(childSnapshot.getValue().equals(mUserIt.getUid()))
+                                        {
+                                                mChat.addUserToChat(mUserIt);
+                                                mChatListAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                }
 
                             }
 
@@ -216,27 +204,9 @@ public class MainPageActivity extends AppCompatActivity {
 
                             }
                         });
-                        FirebaseDatabase.getInstance().getReference().child("chat").child(childSnapshot.getKey()).child("user1");
-                        DatabaseReference mUserChat2 = FirebaseDatabase.getInstance().getReference().child("chat").child(childSnapshot.getKey()).child("user2");
-                     //   System.out.println(mUserChat2.getKey());
-                /*        if(FirebaseAuth.getInstance().getUid().equals(mUserChat1.getKey()))
-                        {
-                           key = mUserChat2.getKey();
-                        }
-                        else key = mUserChat1.getKey();
-
-                        for (UserObject mUserIterator : userList){
-                            if(mUserIterator.getUid().equals(key))
-                            {
-                                user = new UserObject(mUserIterator.getName(),mUserIterator.getPhone(),mUserIterator.getUid());
-                                mChat.addUserToChat(user);
-                            }
-                        }
-                       // UserObject user = new UserObject();*/
-                //        mChat.addUserToChat();
-
-                            chatList.add(mChat);
-                            mChatListAdapter.notifyDataSetChanged();
+                        if (ex) continue;;
+                        chatList.add(mChat);
+                        mChatListAdapter.notifyDataSetChanged();
                     }
                 }
             }

@@ -44,7 +44,7 @@ public class ChatActivity extends AppCompatActivity {
 
         uName = getIntent().getExtras().getString("uName");
         chatID = getIntent().getExtras().getString("chatID");
-        mChatDb = FirebaseDatabase.getInstance().getReference().child("chat").child(chatID);
+        mChatDb = FirebaseDatabase.getInstance().getReference().child("chat").child(chatID).child("message");
         initializeMessage();
         Button mSend = findViewById(R.id.send);
         Button mAddMedia = findViewById(R.id.addMedia);
@@ -115,7 +115,7 @@ public class ChatActivity extends AppCompatActivity {
 
         if(!mMessage.getText().toString().isEmpty()) {
 
-            DatabaseReference newMessageDb = FirebaseDatabase.getInstance().getReference().child("chat").child(chatID).push();
+            DatabaseReference newMessageDb = FirebaseDatabase.getInstance().getReference().child("chat").child(chatID).child("message").push();
 
             Map newMessageMap = new HashMap<>();
             newMessageMap.put("text", mMessage.getText().toString());
@@ -163,7 +163,7 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 }
 
-           //     mMediaAdapter.notifyDataSetChanged();
+           //    mMediaAdapter.notifyDataSetChanged();
             }
         }
     }
